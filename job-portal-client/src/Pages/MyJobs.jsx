@@ -10,7 +10,7 @@ const MyJobs = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch(`http://localhost:3000/myJobs/arkaprava2099@gmail.com`)
+    fetch(`${window.location.origin}/myJobs/arkaprava2099@gmail.com`)
       .then((res) => res.json())
       .then((data) => {
         setJobs(data);
@@ -36,7 +36,7 @@ const MyJobs = () => {
 
   const handleSearch = () => {
     setIsLoading(true); // Trigger loading state
-    fetch(`http://localhost:3000/myJobs/arkaprava2099@gmail.com?search=${searchText}`)
+    fetch(`${window.location.origin}/myJobs/arkaprava2099@gmail.com?search=${searchText}`)
       .then((res) => res.json())
       .then((data) => {
         setJobs(data);
@@ -45,7 +45,7 @@ const MyJobs = () => {
   };
 
   const handleDelete = (id) => {
-    fetch(`http://localhost:3000/job/${id}`, {
+    fetch(`${window.location.origin}/job/${id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())
