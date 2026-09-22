@@ -4,7 +4,6 @@ A full-stack job portal web application built with the MERN stack (MongoDB, Expr
 
 ---
 
-![image](https://github.com/user-attachments/assets/15433576-781b-446f-95be-85cc17297493)
 
 
 ## Features
