@@ -1,88 +1,106 @@
-import React, { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom';
-import { FaBarsStaggered, FaXmark } from "react-icons/fa6";
+import React, { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
+import {
+  FaBarsStaggered,
+  FaXmark,
+  FaBell,
+  FaBriefcase,
+} from "react-icons/fa6";
+
 const Navbar = () => {
-    const[isMenuOpen,setIsMenuOpen]=useState(false);
-    const handleMenuToggler = () =>{
-        setIsMenuOpen(!isMenuOpen)
-    };
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const navItems=[
-        {path:"/",title:"Start a search"},
-        {path:"/my-job",title:"My Jobs"},
-        {path:"/salary",title:"Salary Estimate"},
-        {path:"/post-job",title:"Post a Job"},
-    ]
+  const navItems = [
+    { path: "/", title: "Home" },
+    { path: "/?type=job", title: "Jobs" },
+    { path: "/?type=internship", title: "Internships" },
+    { path: "/salary", title: "Salary" },
+    { path: "/my-job", title: "My Applications" },
+  ];
+
   return (
-    <header className="max-w-screen-2xl container mx-auto xl:px-24 px-4">
-        <nav className="flex justify-between items-center py-6">
-        <a href="/" className="flex items-center gap-2 text-2xl text-white"><span>HEPFAISTOS</span></a>
+    <header className="site-header">
+      <nav className="navbar">
 
-        {/* nav items for large devices */}
-        <ul className="hidden md:flex gap-12">
-            {navItems.map(({path,title})=>(
-                    <li key={path} className="text-base text-primary">
-                    <NavLink
-                    to={path}
-                    className={({ isActive}) =>isActive? "active": "" }
-                  >
-                    {title}
-                  </NavLink>
-                    </li>
-                ))}
-        </ul>
+        <Link to="/" className="brand">
+          <span className="brand-icon">
+            <FaBriefcase />
+          </span>
 
-        {/* signup and login btn */}
-        <div className="text-base text-primary font-medium space hidden lg:flex gap-4">
-            <Link to="/login" className="py-2 px-5 border rounded">Log in</Link>
-            <Link to="/sign-up" className="py-2 px-5 border rounded bg-green text-dk">Sign Up</Link>
+          <span className="brand-text">
+            <strong>InternHub</strong>
+            <small>Jobs & Internships</small>
+          </span>
+        </Link>
 
-        </div>
-        {/* mobile menu */}
-        <div className="md:hidden block">
-            <button onClick={handleMenuToggler}>
-                {
-                    isMenuOpen ?   <FaXmark className="w-5 h-5 text-primary"/>:<FaBarsStaggered className="w-5 h-5 text-primary"/>
-
-                }
-
-            </button>
-
+        <div className="desktop-nav">
+          {navItems.map(({ path, title }) => (
+            <NavLink
+              key={title}
+              to={path}
+              className={({ isActive }) =>
+                isActive && title === "Home"
+                  ? "nav-link active"
+                  : "nav-link"
+              }
+            >
+              {title}
+            </NavLink>
+          ))}
         </div>
 
-        </nav>
-        {/*navitems for mobile*/}
-        <div className={`px-4 bg-black py-5 rounded-sm ${isMenuOpen ? "":"hidden"}`}>
-            <ul>
-            {navItems.map(({path,title})=>(
-                    <li key={path} className="text-base text-white first:text-white py-1">
-                    <NavLink
-                    to={path}
-                    className={({ isActive}) =>isActive? "active": "" }
-                  >
-                    {title}
-                  </NavLink>
-                    </li>
-                ))} 
-                <li className="blur-box text-white py-1"><Link to="/login" >Log in</Link>
-          </li>
-            </ul>
+        <div className="nav-actions">
+
+          <button className="notification-btn" type="button">
+            <FaBell />
+            <span></span>
+          </button>
+
+          <Link to="/login" className="login-btn">
+            Log in
+          </Link>
+
+          <Link to="/login" className="signup-btn">
+            Sign Up
+          </Link>
+
         </div>
+
+        <button
+          className="mobile-menu-btn"
+          type="button"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          {isMenuOpen ? <FaXmark /> : <FaBarsStaggered />}
+        </button>
+
+      </nav>
+
+      {isMenuOpen && (
+        <div className="mobile-menu">
+
+          {navItems.map(({ path, title }) => (
+            <NavLink
+              key={title}
+              to={path}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {title}
+            </NavLink>
+          ))}
+
+          <Link
+            to="/login"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Log in
+          </Link>
+
+        </div>
+      )}
+
     </header>
   );
 };
 
 export default Navbar;
-export const Home = () => {
-  const [query, setQuery] = useState("");
-  const handleInputChange = (event) => {
-    setQuery(event.target.value);
-  };
-  console.log(query);
-  return (
-    <div>
-      <Banner />
-      <Banner query={query} handleInputChange={handleInputChange} />
-    </div>
-  );
-};

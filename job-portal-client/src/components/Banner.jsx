@@ -1,39 +1,103 @@
-import React from 'react'
-import {FiMapPin, FiSearch} from "react-icons/fi"
+import React from "react";
+import { FiSearch, FiMapPin, FiBriefcase } from "react-icons/fi";
 
- const Banner=({query, handleInputChange}) => {
+const Banner = ({ query, handleInputChange }) => {
+  return (
+    <section className="hero-section">
 
-  console.log(query)
-return (
-<div className='max-w-screen-2xl container mx-auto xl:px-24 px-4 md:py-20 py-14 '>
-    <h1 className='text-5xl font-bold text-primary mb-3'>Find your <span className='text-green'>new internship</span> today</h1>
-    <p  className=' text-lg text-green/85 mb-8'>Thousands of internship in various sectors are waiting for you.</p>
+      <div className="hero-content">
 
-    <form>
-        <div className=' flex justify-start md:flex-row flex-col md:gap-4 gap-4'>
-            <div className='blur-box flex md:rounded-s-md rounded shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-green md:w-1/2 w-full'>
-                <input type="text"
-                 name="title"
-                  id="title" 
-                  placeholder='What position are you looking for?' 
-                  className='placeholder:text-ly block flex-1 border-0 bg-transparent py-1.5 pl-8 text-white placeholder:text-gray-400 focus:right-0 sm:text-sm sm:leading-6' 
-                onChange={handleInputChange}
-                value={query}
-                />
-                <FiSearch className='absolute mt-2.5 ml-2 text-gray-400 '/>
-            </div>
-            <div className='blur-box flex md:rounded-s-md rounded shadow-sm ring-1 ring-inset ring-gray-300
-              focus-within:ring-2 focus-within: ring-inset focus-within:ring-green md:w-1/3 w-full  '>
-              <input type="text" name="title" id="title" placeholder='Location' className='placeholder:text-ly block flex-1
-               border-0 bg-transparent py-1.5 pl-8 text-white placeholder:text-gray-400 focus:right-0
-               sm:text-sm sm:leading-6'
-            />
-            <FiMapPin className='absolute mt-2.5 ml-2 text-gray-400 '/>
-         </div>
-         <button type='submit' className='bg-green py-2 px-8 text-dk md:rounded'>Search </button>
+        <div className="hero-badge">
+          🚀 Find opportunities that match your skills
         </div>
-    </form>
-</div>
-)
-}
-export default Banner
+
+        <h1>
+          Find Your Next <span>Opportunity</span>
+        </h1>
+
+        <p>
+          Discover internships and jobs from companies looking for
+          talented students and fresh graduates.
+        </p>
+
+        <div className="search-box">
+
+          <div className="search-field">
+            <FiSearch />
+
+            <input
+              type="text"
+              placeholder="Job title, skill or company"
+              value={query}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className="search-field">
+            <FiMapPin />
+
+            <input
+              type="text"
+              placeholder="Location"
+            />
+          </div>
+
+          <div className="search-field">
+            <FiBriefcase />
+
+            <select defaultValue="">
+              <option value="" disabled>
+                Job Type
+              </option>
+
+              <option value="Full-time">
+                Full-time
+              </option>
+
+              <option value="Part-time">
+                Part-time
+              </option>
+
+              <option value="Internship">
+                Internship
+              </option>
+
+              <option value="Remote">
+                Remote
+              </option>
+            </select>
+          </div>
+
+          <button className="search-btn" type="button">
+            <FiSearch />
+            Search
+          </button>
+
+        </div>
+
+        <div className="hero-stats">
+
+          <div>
+            <strong>10K+</strong>
+            <span>Jobs</span>
+          </div>
+
+          <div>
+            <strong>5K+</strong>
+            <span>Internships</span>
+          </div>
+
+          <div>
+            <strong>2K+</strong>
+            <span>Companies</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+  );
+};
+
+export default Banner;

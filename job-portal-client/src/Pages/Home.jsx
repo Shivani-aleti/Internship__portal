@@ -1,142 +1,218 @@
-
-import React, { useEffect, useState } from 'react';
-import Banner from '../components/Banner';
-import Card from '../components/Card';
-import Jobs from './Jobs';
-import Sidebar from '../sidebar/Sidebar';
-import Newsletter from '../components/Newsletter';
+import React, { useEffect, useMemo, useState } from "react";
+import Banner from "../components/Banner";
+import Card from "../components/Card";
+import Sidebar from "../sidebar/Sidebar";
+import Newsletter from "../components/Newsletter";
+import { FiSliders } from "react-icons/fi";
 
 const Home = () => {
-  
-  const[selectedCategory,setSelectedCategory]= useState(null);
-  const[jobs,setJobs]=useState([]);
-  const[isLoading,setIsLoading]=useState(true);
-  const[currentPage,setCurrentPage]=useState(1);
-  const itemPerPage=6;
-  
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [jobs, setJobs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [query, setQuery] = useState("");
 
-  useEffect(()=>{
+  const itemPerPage = 6;
+
+  useEffect(() => {
     setIsLoading(true);
-    fetch("jobs.json").then(res=>res.json()).then(data=>{
-      //console.log(data)
-      setJobs(data)
-      setIsLoading(false);
-    })
-  },[])
-  
-//  console.log(jobs)
-const [query,setQuery]=useState("");
-  const handleInputChange=(event)=>{
-    setQuery(event.target.value)
+
+    fetch("/jobs.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setJobs(data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error loading jobs:", error);
+        setIsLoading(false);
+      });
+  }, []);
+
+  const handleInputChange = (event) => {
+    setQuery(event.target.value);
+    setCurrentPage(1);
   };
-  //filter jobs by title
-const filteredItems=jobs.filter((job)=>job.jobTitle.toLowerCase().indexOf(query.toLowerCase())!==-1);
-//console.log(filteredItems)
-  //----Radio Button---
-  const handleChange=(event)=>{
-    setSelectedCategory(event.target.value)
 
+  const handleChange = (event) => {
+    setSelectedCategory(event.target.value);
+    setCurrentPage(1);
+  };
 
-  }
+  const handleClick = (event) => {
+    setSelectedCategory(event.target.value);
+    setCurrentPage(1);
+  };
 
-  //-----button based filtering---
-  const handleClick=(event)=>{
-    setSelectedCategory(event.target.value)
+  const filteredJobs = useMemo(() => {
+    let result = [...jobs];
 
-  }
+    if (query.trim()) {
+      const search = query.toLowerCase();
 
-//calculate the index range
-const calculatePageRange=()=>{
-  const startIndex=(currentPage -1) * itemPerPage;
-  const endIndex=startIndex+ itemPerPage;
-  return {startIndex,endIndex};
-}
-
-const nextPage=()=>{
-  if(currentPage<Math.ceil(filteredItems.length / itemPerPage)){
-    setCurrentPage(currentPage+1);
-  }
-}
-//function for the previous page
-const prevPage=()=>{
-  if(currentPage>1){
-    setCurrentPage(currentPage-1)
-  }
-}
-  //main function
-  const filteredData=(jobs,selected,query)=>{
-    let filteredJobs=jobs;
-    //filtering input items
-    if(query){
-      filteredJobs=filteredItems;
-    }
-    //category filtering
-    if(selected){
-      filteredJobs=filteredJobs.filter(
-        ({jobLocation,maxPrice,experienceLevel,salaryType,employmentType,postingDate})=>
-        jobLocation.toLowerCase()==selected.toLowerCase()||
-        parseInt(maxPrice)<=parseInt(selected)||
-        postingDate>=selected||
-        salaryType.toLowerCase()==selected.toLowerCase()||
-        experienceLevel.toLowerCase()==selected.toLowerCase()||
-        employmentType.toLowerCase()==selected.toLowerCase()      
+      result = result.filter((job) =>
+        [
+          job.jobTitle,
+          job.companyName,
+          job.jobLocation,
+          job.description,
+          job.employmentType,
+          job.experienceLevel,
+        ]
+          .filter(Boolean)
+          .some((value) =>
+            value.toLowerCase().includes(search)
+          )
       );
-      console.log(filteredJobs);
     }
 
-    //slice the data based on current page
-    const {startIndex,endIndex} = calculatePageRange();
-    filteredJobs=filteredJobs.slice(startIndex,endIndex)
-  
-    return filteredJobs.map((data,i)=><Card key={i} data={data}/>)
+    if (selectedCategory) {
+      result = result.filter(
+        ({
+          jobLocation,
+          maxPrice,
+          experienceLevel,
+          salaryType,
+          employmentType,
+          postingDate,
+        }) =>
+          jobLocation?.toLowerCase() ===
+            selectedCategory.toLowerCase() ||
+          salaryType?.toLowerCase() ===
+            selectedCategory.toLowerCase() ||
+          experienceLevel?.toLowerCase() ===
+            selectedCategory.toLowerCase() ||
+          employmentType?.toLowerCase() ===
+            selectedCategory.toLowerCase() ||
+          parseInt(maxPrice) <= parseInt(selectedCategory) ||
+          postingDate >= selectedCategory
+      );
+    }
 
+    return result;
+  }, [jobs, query, selectedCategory]);
 
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredJobs.length / itemPerPage)
+  );
 
-  }
+  const visibleJobs = filteredJobs.slice(
+    (currentPage - 1) * itemPerPage,
+    currentPage * itemPerPage
+  );
 
-  const result=filteredData(jobs,selectedCategory,query);
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((page) => page + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((page) => page - 1);
+    }
+  };
 
   return (
-    <div >
-      <Banner query={query} handleInputChange={handleInputChange}/>
-    
-      {/*Main content */}
-      <div className='text-white md:grid grid-cols-4 gap-8 lg:px-24 px-4 py-12'>
-          {/*Job cards left*/}
+    <main>
+      <Banner
+        query={query}
+        handleInputChange={handleInputChange}
+      />
 
-      <div className='p-4 rounded'>
-      <Sidebar handleChange={handleChange} handleClick={handleClick} />
-      
-      </div>
-  {/*Job cards */}
-      <div className='col-span-2 p-4 rounded-sm'>
-      {
-        isLoading ? (<p className='font-medium'>Loading.....</p>) : result.length > 0 ? (<Jobs result={result}/>):
-        <>
-        <h3 className='text-lg font-bold mb-2 '>{result.length} Jobs</h3>
-        <p>No data found!</p>
-        </>
-      }
-      {/*pagination*/}
-      {
-        result.length > 0 ? (
-        <div className="flex justify-center mt-4 space-x-8">
-        <button onClick={prevPage} disabled={currentPage==1} className="hover:underline">Previous</button>
-        <span>Page {currentPage} of {Math.ceil(filteredItems.length/itemPerPage)}</span>
-        <button onClick={nextPage} disabled={currentPage==Math.ceil(filteredItems.length/itemPerPage)} className="hover:underline"> Next </button>
+      <section className="jobs-section">
+
+        <div className="mobile-filter-title">
+          <FiSliders />
+          <span>Filter Jobs</span>
         </div>
-        ):""
-      }
-     
-      </div>
-    
-    
-    {/*Job cards right*/}
-      <div className='p-4 rounded'><Newsletter/></div>
-      </div>
-      </div>
-      
-  )
-}
 
-export default Home
+        <div className="filters-column">
+          <div className="filter-card">
+            <Sidebar
+              handleChange={handleChange}
+              handleClick={handleClick}
+            />
+          </div>
+        </div>
+
+        <div className="jobs-column">
+
+          <div className="jobs-header">
+            <div>
+              <span className="section-label">
+                OPPORTUNITIES
+              </span>
+
+              <h2>Recommended Jobs</h2>
+
+              <p>
+                {filteredJobs.length} opportunities found
+              </p>
+            </div>
+
+            <div className="sort-box">
+              <span>Sort by</span>
+              <select defaultValue="recent">
+                <option value="recent">Most Recent</option>
+                <option value="salary">Salary</option>
+              </select>
+            </div>
+          </div>
+
+          {isLoading ? (
+            <div className="loading-box">
+              Loading opportunities...
+            </div>
+          ) : visibleJobs.length > 0 ? (
+            <div className="job-list">
+              {visibleJobs.map((job) => (
+                <Card key={job.id} data={job} />
+              ))}
+            </div>
+          ) : (
+            <div className="empty-state">
+              <div>🔍</div>
+              <h3>No jobs found</h3>
+              <p>
+                Try changing your search or filters.
+              </p>
+            </div>
+          )}
+
+          {visibleJobs.length > 0 && (
+            <div className="pagination">
+
+              <button
+                onClick={prevPage}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+
+              <span>
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                onClick={nextPage}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+
+            </div>
+          )}
+        </div>
+
+        <div className="sidebar-column">
+          <Newsletter />
+        </div>
+
+      </section>
+    </main>
+  );
+};
+
+export default Home;

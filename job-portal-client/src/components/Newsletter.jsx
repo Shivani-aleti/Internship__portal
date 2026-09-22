@@ -1,38 +1,78 @@
 import React from "react";
-import { FaEnvelopeOpenText, FaRocket } from "react-icons/fa6";
+import {
+  FaFileArrowUp,
+  FaRocket,
+  FaCircleCheck,
+} from "react-icons/fa6";
+
 const Newsletter = () => {
-return (
-<div>
-<div>
-<h3 className="text-lg font-bold mb-2 flex items-center gap-2">
-<FaEnvelopeOpenText />
-Email me for hobs
-</h3>
-<p className="text-white/75 text-base mb-4">Ut esse eiusmod aute. Sit enim labore dolore. Aute ea
-fugiat commodo ea foes.</p>
-<div className="w-full space-y-4">
-<input type="email" name="email" id="email" placeholder=" name@mail.com" className="placeholder:text-ly bg-transparent w-full block py-2
-p1-3 border focus: outline-none"/>
-<input type="submit" value={"Subscribe"} className="text-dk w-full block py-2 pl-3 border focus: outline-none
-bg-blue rounded-sm text-dk cursor-pointer font-semibold"/>
-</div>
-</div>
-{/*2nd Part */}
-<div className="mt-20">
-<h3 className="text-lg font-bold mb-2 flex items-center gap-2">
-<FaRocket />
-Get Noticed faster
-</h3>
-<p className="text-white/75 text-base mb-4">Ut esse eiusmod aute. Sit enim labore dolore. Aute ea
-fugiat commodo ea foes.</p>
-<div className="w-full space-y-4">
-<input type="submit" value={"Upload your Resume"} className="w-full block py-2 pl-3 border focus: outline-none
-bg-blue rounded-sm text-dk cursor-pointer font-semibold"/>
-</div>
+  return (
+    <aside className="right-sidebar">
 
+      <div className="resume-card">
+        <div className="resume-icon">
+          <FaFileArrowUp />
+        </div>
 
-</div>
-</div>
-);
+        <h3>Upload Your Resume</h3>
+
+        <p>
+          Let recruiters discover you faster. Upload your
+          latest resume and increase your chances of getting
+          noticed.
+        </p>
+
+        <button className="resume-btn">
+          Upload Resume
+        </button>
+
+        <small>PDF, DOC, DOCX up to 5MB</small>
+      </div>
+
+      <div className="why-card">
+        <div className="side-heading">
+          <FaRocket />
+          <h3>Why Choose InternHub?</h3>
+        </div>
+
+        <div className="benefit">
+          <FaCircleCheck />
+          <div>
+            <strong>Thousands of opportunities</strong>
+            <p>Find jobs and internships in one place.</p>
+          </div>
+        </div>
+
+        <div className="benefit">
+          <FaCircleCheck />
+          <div>
+            <strong>Easy applications</strong>
+            <p>Apply to opportunities without the hassle.</p>
+          </div>
+        </div>
+
+        <div className="benefit">
+          <FaCircleCheck />
+          <div>
+            <strong>Career growth</strong>
+            <p>Discover opportunities that match your skills.</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="career-card">
+        <div className="career-card-content">
+          <span>🚀</span>
+          <h3>Your next opportunity is waiting.</h3>
+          <p>
+            Keep exploring, keep learning and take the next
+            step toward your career.
+          </p>
+        </div>
+      </div>
+
+    </aside>
+  );
 };
+
 export default Newsletter;
